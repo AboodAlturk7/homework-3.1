@@ -1,0 +1,73 @@
+using System;
+using System.Windows.Forms;
+
+namespace GuessTheNumberGame
+{
+    public partial class MainForm : Form
+    {
+        private int targetNumber;
+        private const int MinNumber = 1;
+        private const int MaxNumber = 1000;
+
+        public MainForm()
+        {
+            InitializeComponent();
+            StartNewGame();
+        }
+
+        private void StartNewGame()
+        {
+            Random random = new Random();
+            targetNumber = random.Next(MinNumber, MaxNumber + 1);
+
+            lblPrompt.Text = "I have a number between 1 and 1000 - can you guess my number?";
+            lblResult.Text = string.Empty;
+            textBoxGuess.Text = string.Empty;
+            textBoxGuess.Enabled = true;
+
+            BackColor = DefaultBackColor;
+        }
+
+        private void btnGuess_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(textBoxGuess.Text, out int userGuess))
+            {
+                EvaluateGuess(userGuess);
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid number.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void EvaluateGuess(int userGuess)
+        {
+            int difference = Math.Abs(userGuess - targetNumber);
+
+            if (userGuess == targetNumber)
+            {
+                MessageBox.Show("Correct!", "Congratulations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                BackColor = System.Drawing.Color.Green;
+                textBoxGuess.Enabled = false;
+            }
+            else
+            {
+                if (difference <= 10)
+                {
+                    lblResult.Text = "Warmer";
+                    BackColor = System.Drawing.Color.Red;
+                }
+                else
+                {
+                    lblResult.Text = "Colder";
+                    BackColor = System.Drawing.Color.Blue;
+                }
+            }
+        }
+
+        private void btnNewGame_Click(object sender, EventArgs e)
+        {
+            StartNewGame();
+        }
+    }
+}
